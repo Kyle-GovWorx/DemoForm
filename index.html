@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GovWorx Demo Qualifier</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.35rem);
+      --text-xl: clamp(1.35rem, 1.15rem + 1vw, 1.75rem);
+      --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem;
+      --color-bg: #f7f6f2; --color-surface: #fbfbf9; --color-surface-2: #f3f0ec; --color-border: #d4d1ca; --color-text: #28251d; --color-text-muted: #6d6b66; --color-primary: #01696f; --color-primary-hover: #0c4e54; --color-success: #437a22; --color-warning: #964219; --radius-md: 0.75rem; --radius-lg: 1rem; --radius-full: 9999px; --shadow-sm: 0 4px 12px rgba(40,37,29,.06); --shadow-md: 0 14px 32px rgba(40,37,29,.10); --font-body: 'Satoshi', Arial, sans-serif;
+    }
+    [data-theme="dark"] {
+      --color-bg: #171614; --color-surface: #1c1b19; --color-surface-2: #22211f; --color-border: #393836; --color-text: #e4e1da; --color-text-muted: #aaa69d; --color-primary: #4f98a3; --color-primary-hover: #72b2bb; --shadow-sm: 0 6px 18px rgba(0,0,0,.25); --shadow-md: 0 16px 36px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body); background: var(--color-bg); color: var(--color-text); font-size: var(--text-base); line-height: 1.45; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: var(--space-6); }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:var(--space-4); margin-bottom: var(--space-6); }
+    .logo { display:flex; align-items:center; gap: .8rem; font-weight:700; }
+    .logo-mark { width:36px; height:36px; border-radius: 12px; background: linear-gradient(135deg, var(--color-primary), #67aeb0); display:grid; place-items:center; color:white; font-size: 0.95rem; }
+    .theme-toggle { min-width:44px; min-height:44px; border:1px solid var(--color-border); border-radius: var(--radius-full); background: var(--color-surface); color: var(--color-text); }
+    .hero { display:grid; grid-template-columns: 1.2fr .8fr; gap: var(--space-5); margin-bottom: var(--space-6); }
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+    .hero-card { padding: var(--space-6); }
+    .hero h1 { font-size: var(--text-xl); line-height:1.1; margin-bottom: var(--space-3); }
+    .hero p { color: var(--color-text-muted); max-width: 58ch; }
+    .score-box { padding: var(--space-6); display:flex; flex-direction:column; justify-content:space-between; }
+    .score-pill { display:inline-flex; align-items:center; gap:.5rem; background: rgba(1,105,111,.08); color: var(--color-primary); border-radius: var(--radius-full); padding: .45rem .75rem; font-size: var(--text-sm); font-weight: 700; }
+    .score { font-size: 2.8rem; font-weight: 700; margin: var(--space-4) 0 .25rem; }
+    .muted { color: var(--color-text-muted); }
+    form { display:grid; gap: var(--space-5); }
+    .section { padding: var(--space-5); }
+    .section h2 { font-size: var(--text-lg); margin-bottom: .25rem; }
+    .section .sub { color: var(--color-text-muted); font-size: var(--text-sm); margin-bottom: var(--space-4); }
+    .grid { display:grid; grid-template-columns: 1fr; gap: var(--space-4); }
+    .grid-3 { display:grid; grid-template-columns: 1fr; gap: var(--space-4); }
+    .field { display:flex; flex-direction:column; gap:.4rem; }
+    .field.full { grid-column: 1 / -1; }
+    label { font-size: var(--text-sm); font-weight: 700; }
+    input, select, textarea { width:100%; border:1px solid var(--color-border); background: var(--color-bg); color: var(--color-text); border-radius: .8rem; padding: .85rem .9rem; min-height: 46px; }
+    textarea { min-height: 92px; resize: vertical; }
+    .chips { display:flex; flex-wrap:wrap; gap:.6rem; }
+    .chip { position:relative; }
+    .chip input { position:absolute; opacity:0; pointer-events:none; }
+    .chip span { display:inline-flex; align-items:center; min-height:42px; padding:.65rem .85rem; border-radius:999px; border:1px solid var(--color-border); background: var(--color-bg); font-size: var(--text-sm); font-weight:600; }
+    .chip input:checked + span { background: rgba(1,105,111,.11); border-color: var(--color-primary); color: var(--color-primary); }
+    .quick { display:grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: .75rem; }
+    .quick button { min-height: 48px; border-radius: .9rem; border:1px solid var(--color-border); background: var(--color-bg); color: var(--color-text); font-weight:700; }
+    .quick button.active { background: rgba(1,105,111,.11); border-color: var(--color-primary); color: var(--color-primary); }
+    .footerbar { position: sticky; bottom: 0; margin-top: var(--space-4); background: color-mix(in srgb, var(--color-surface) 92%, transparent); backdrop-filter: blur(10px); border:1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); display:flex; flex-wrap:wrap; gap: var(--space-3); align-items:center; justify-content:space-between; }
+    .actions { display:flex; flex-wrap:wrap; gap: .75rem; }
+    .btn { min-height: 46px; padding: .85rem 1rem; border-radius: .9rem; border:1px solid var(--color-border); background: var(--color-bg); color: var(--color-text); font-weight:700; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; }
+    .btn.primary { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+    .btn.primary:hover { background: var(--color-primary-hover); }
+    .mini-list { display:grid; gap: .6rem; margin-top: var(--space-3); }
+    .mini-item { display:flex; justify-content:space-between; gap: 1rem; font-size: var(--text-sm); padding-bottom: .55rem; border-bottom: 1px solid var(--color-border); }
+    .status { font-weight:700; }
+    .yes { color: var(--color-success); }
+    .warn { color: var(--color-warning); }
+    .note { font-size: var(--text-sm); color: var(--color-text-muted); }
+    @media (max-width: 860px) {
+      .hero, .grid, .grid-3, .quick { grid-template-columns: 1fr; }
+      .wrap { padding: var(--space-4); }
+      .topbar { align-items:flex-start; }
+      .footerbar { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="logo">
+        <div class="logo-mark">GW</div>
+        <div>
+          <div>GovWorx Demo Qualifier</div>
+          <div class="muted" style="font-size:var(--text-sm)">Fast intake for HubSpot deals</div>
+        </div>
+      </div>
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle dark mode">☾</button>
+    </div>
+
+    <div class="hero">
+      <div class="panel hero-card">
+        <h1>Quick intake built for reps, not admins.</h1>
+        <p>Capture only what matters so reps can qualify fast and hand off a clean summary.</p>
+      </div>
+      <div class="panel score-box">
+        <div>
+          <div class="score-pill">Demo readiness</div>
+          <div class="score" id="score">0%</div>
+          <div class="muted" id="scoreLabel">Quick qualification</div>
+        </div>
+        <div class="mini-list" id="checklist"></div>
+      </div>
+    </div>
+
+    <form id="qualForm">
+      <section class="panel section">
+        <h2>Account basics</h2>
+        <div class="sub">Short, fast, and built for live calls.</div>
+        <div class="grid">
+          <div class="field"><label for="agency">Account</label><input id="agency" name="agency" placeholder="San Bernardino County 911" /></div>
+          <div class="field"><label for="rep">AE / SDR</label><input id="rep" name="rep" placeholder="Rep name" /></div>
+          <div class="field"><label for="persona">Contact title</label><input id="persona" name="persona" placeholder="Director, Manager, Supervisor" /></div>
+          <div class="field"><label for="agencyType">Agency type</label><select id="agencyType" name="agencyType"><option value="">Select one</option><option>PSAP / 911</option><option>Law enforcement</option><option>Fire</option><option>EMS</option><option>Consolidated center</option><option>Other public sector</option></select></div>
+          <div class="field full"><label for="pain">Top pain point</label><input id="pain" name="pain" placeholder="What problem are they trying to fix right now?" /></div>
+        </div>
+      </section>
+
+      <section class="panel section">
+        <h2>Current stack</h2>
+        <div class="sub">Just the stack details needed for a useful demo.</div>
+        <div class="grid">
+          <div class="field"><label for="cad">CAD</label><input id="cad" name="cad" placeholder="Vendor / version" /></div>
+          <div class="field"><label for="vlr">VLR</label><input id="vlr" name="vlr" placeholder="Vendor" /></div>
+          <div class="field"><label for="cfs">CFS</label><input id="cfs" name="cfs" placeholder="Vendor" /></div>
+          <div class="field"><label for="rms">RMS</label><input id="rms" name="rms" placeholder="Vendor" /></div>
+          <div class="field full"><label for="telephony">Telephony vendor</label><input id="telephony" name="telephony" placeholder="Vendor / platform" /></div>
+        </div>
+      </section>
+
+      <section class="panel section">
+        <h2>Products of interest</h2>
+        <div class="sub">Pick what the demo should focus on.</div>
+        <div class="chips">
+          <label class="chip"><input type="checkbox" name="products" value="QA & Eval"><span>QA & Eval</span></label>
+          <label class="chip"><input type="checkbox" name="products" value="Training / LMS"><span>Training / LMS</span></label>
+          <label class="chip"><input type="checkbox" name="products" value="Pre-hire testing"><span>Pre-hire testing</span></label>
+          <label class="chip"><input type="checkbox" name="products" value="Real-time guidance"><span>Real-time guidance</span></label>
+          <label class="chip"><input type="checkbox" name="products" value="Analytics"><span>Analytics</span></label>
+          <label class="chip"><input type="checkbox" name="products" value="Performance management"><span>Performance management</span></label>
+        </div>
+      </section>
+
+      <section class="panel section">
+        <h2>Demo fit</h2>
+        <div class="sub">Focus the story and define the handoff.</div>
+        <div class="quick" id="quickBtns">
+          <button type="button" data-target="goal" data-value="Operational pain">Operational pain</button>
+          <button type="button" data-target="goal" data-value="Compliance / QA">Compliance / QA</button>
+          <button type="button" data-target="goal" data-value="Training uplift">Training uplift</button>
+          <button type="button" data-target="goal" data-value="Hiring / retention">Hiring / retention</button>
+        </div>
+        <div class="grid" style="margin-top:1rem;">
+          <div class="field full"><label for="goal">What should the demo prove?</label><input id="goal" name="goal" placeholder="What must the demo prove?" /></div>
+          <div class="field full"><label for="nextStep">Best next step</label><input id="nextStep" name="nextStep" placeholder="Tech review, proposal, pilot, procurement review" /></div>
+          <div class="field full"><label for="notes">Notes</label><textarea id="notes" name="notes" placeholder="Anything the demo team should know going in"></textarea></div>
+        </div>
+      </section>
+
+      <div class="footerbar">
+        <div>
+          <div style="font-weight:700">Ready to copy</div>
+          <div class="note">Copy the summary into email, Slack, HubSpot, or your notes.</div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" type="button" id="copyBtn">Copy summary</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const html = document.documentElement;
+    const themeToggle = document.querySelector('[data-theme-toggle]');
+    let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    html.setAttribute('data-theme', theme);
+    themeToggle.textContent = theme === 'dark' ? '☀' : '☾';
+    themeToggle.addEventListener('click', () => {
+      theme = theme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', theme);
+      themeToggle.textContent = theme === 'dark' ? '☀' : '☾';
+    });
+
+    const form = document.getElementById('qualForm');
+    const copyBtn = document.getElementById('copyBtn');
+    const scoreEl = document.getElementById('score');
+    const scoreLabel = document.getElementById('scoreLabel');
+    const checklistEl = document.getElementById('checklist');
+
+    const checkpoints = [
+      { key: 'pain', label: 'Pain point captured' },
+      { key: 'cad', label: 'CAD captured' },
+      { key: 'telephony', label: 'Telephony captured' },
+      { key: 'goal', label: 'Demo focus set' }
+    ];
+
+    function value(id) {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    }
+
+    function selectedProducts() {
+      return [...document.querySelectorAll('input[name="products"]:checked')].map(i => i.value);
+    }
+
+    function buildSummary() {
+      const lines = [
+        `GovWorx Demo Qualification`,
+        ``,
+        `Account: ${value('agency') || '-'}`,
+        `Rep: ${value('rep') || '-'}`,
+        `Contact title: ${value('persona') || '-'}`,
+        `Agency type: ${value('agencyType') || '-'}`,
+        `Top pain point: ${value('pain') || '-'}`,
+        ``,
+        `Current stack`,
+        `CAD: ${value('cad') || '-'}`,
+        `VLR: ${value('vlr') || '-'}`,
+        `CFS: ${value('cfs') || '-'}`,
+        `RMS: ${value('rms') || '-'}`,
+        `Telephony: ${value('telephony') || '-'}`,
+        ``,
+        `Products of interest: ${selectedProducts().join(', ') || '-'}`,
+        ``,
+        `What should the demo prove? ${value('goal') || '-'}`,
+        `Best next step: ${value('nextStep') || '-'}`,
+        `Notes: ${value('notes') || '-'}`,
+        ``,
+        `Demo readiness: ${scoreEl.textContent} - ${scoreLabel.textContent}`
+      ];
+      return lines.join('\n');
+    }
+
+    function fallbackCopyText(text) {
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      area.style.pointerEvents = 'none';
+      document.body.appendChild(area);
+      area.focus();
+      area.select();
+      area.setSelectionRange(0, area.value.length);
+      const success = document.execCommand('copy');
+      document.body.removeChild(area);
+      return success;
+    }
+
+    function updateScore() {
+      let complete = 0;
+      checklistEl.innerHTML = '';
+      checkpoints.forEach(item => {
+        const ok = !!value(item.key);
+        if (ok) complete += 1;
+        const row = document.createElement('div');
+        row.className = 'mini-item';
+        row.innerHTML = `<span>${item.label}</span><span class="status ${ok ? 'yes' : 'warn'}">${ok ? 'Yes' : 'No'}</span>`;
+        checklistEl.appendChild(row);
+      });
+      const pct = Math.round((complete / checkpoints.length) * 100);
+      scoreEl.textContent = pct + '%';
+      scoreLabel.textContent = pct >= 85 ? 'Demo ready' : pct >= 60 ? 'Close to ready' : 'More discovery needed';
+    }
+
+    form.addEventListener('input', updateScore);
+
+    document.getElementById('quickBtns').addEventListener('click', (e) => {
+      if (e.target.tagName !== 'BUTTON') return;
+      document.querySelectorAll('#quickBtns button').forEach(btn => btn.classList.remove('active'));
+      e.target.classList.add('active');
+      document.getElementById('goal').value = e.target.dataset.value;
+      updateScore();
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      const text = buildSummary();
+      let copied = false;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        }
+      } catch {}
+      if (!copied) copied = fallbackCopyText(text);
+      copyBtn.textContent = copied ? 'Copied!' : 'Copy failed';
+      setTimeout(() => copyBtn.textContent = 'Copy summary', 1400);
+    });
+
+    updateScore();
+  </script>
+</body>
+</html>
